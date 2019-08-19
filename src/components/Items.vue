@@ -238,8 +238,8 @@ export default {
       // eslint-disable-next-line
       console.log(payload)
       axios
-        .delete(path, payload)
-        .then(() => {
+      .delete(path, {params: payload })
+      .then(() => {
           this.getItems();
           this.message = "Item was deleted";
           this.showMessage = true;
