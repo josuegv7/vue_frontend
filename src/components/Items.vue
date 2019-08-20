@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h1>Items</h1>
+        <h2>Items</h2>
         <hr />
         <br />
         <br />
@@ -10,7 +10,7 @@
         <button type="button" class="btn btn-success btn-sm" v-b-modal.item-modal>Add Item</button>
         <br />
         <br />
-        <table class="table table-hover">
+        <table   class="table table-hover table-responsive">
           <thead>
             <tr>
               <th scope="col">Name</th>
@@ -24,7 +24,7 @@
           </thead>
           <tbody>
             <tr v-for="item in msg" v-bind:key="item._id.$oid ">
-              <td>{{ item.name }}</td>
+              <td class="stickyColumn">{{ item.name }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.price }}</td>
               <td>{{ item.store }}</td>
@@ -306,3 +306,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  table tr { font-size: .7rem; }
+</style>
