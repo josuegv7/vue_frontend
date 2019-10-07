@@ -332,3 +332,6 @@ export default {
 
 
 
+<style scoped>
+  table tr { font-size: .7rem; }
+</style>

@@ -155,6 +155,7 @@
 import axios from "axios";
 import Alert from "./Alert.vue";
 
+
 export default {
   name: "Ping",
   data() {
@@ -193,8 +194,10 @@ export default {
     },
     getItems() {
       const path = "http://127.0.0.1:5000/items";
+      var bearer_Token = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
       axios
-        .get(path)
+        .get(path, config)
         .then(res => {
           this.msg = JSON.parse(res.data);
         })
@@ -204,8 +207,11 @@ export default {
     },
     addItem(payload) {
       const path = `http://127.0.0.1:5000/item`;
+      var bearer_Token = this.$cookies.get("TOKEN");
+      console.log(bearer_Token)
+      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
       axios
-        .post(path, payload)
+        .post(path, payload, config)
         .then(() => {
           this.getItems();
           this.message = "Item added!";
@@ -219,10 +225,10 @@ export default {
     },
     updateItem(payload) {
       const path = `http://127.0.0.1:5000/item`;
-      // eslint-disable-next-line
-      console.log(payload)
+      var bearer_Token = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
       axios
-        .put(path, payload)
+        .put(path, payload, config)
         .then(() => {
           this.getItems();
           this.message = "Item Updated";
@@ -236,10 +242,11 @@ export default {
     },
     removeItem(payload) {
       const path = `http://127.0.0.1:5000/item`;
-      // eslint-disable-next-line
-      console.log(payload)
+      var delete_Object = {params: payload }
+      var bearer_Token = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
       axios
-      .delete(path, {params: payload })
+      .delete(path, delete_Object, config)
       .then(() => {
           this.getItems();
           this.message = "Item was deleted";
@@ -304,6 +311,7 @@ export default {
   },
   created() {
     this.getItems();
+
   }
 };
 </script>
