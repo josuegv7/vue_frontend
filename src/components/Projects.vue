@@ -213,7 +213,6 @@ export default {
         });
     },
     addProject(payload) {
-        console.log(payload)
         const path = `http://127.0.0.1:5000/project`;
       axios
         .post(path, payload)
@@ -231,7 +230,6 @@ export default {
     updateProject(payload) {
       const path = `http://127.0.0.1:5000/project`;
       // eslint-disable-next-line
-      //console.log(payload)
       axios
         .put(path, payload)
         .then(() => {
@@ -248,7 +246,6 @@ export default {
     removeProject(payload) {
       const path = `http://127.0.0.1:5000/project`;
       // eslint-disable-next-line
-      console.log(payload)
       axios
         .delete(path, { params: payload })
         .then(() => {

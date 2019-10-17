@@ -208,7 +208,6 @@ export default {
     addItem(payload) {
       const path = `http://127.0.0.1:5000/item`;
       var bearer_Token = this.$cookies.get("TOKEN");
-      console.log(bearer_Token)
       var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
       axios
         .post(path, payload, config)

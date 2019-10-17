@@ -26,7 +26,6 @@ export default {
         .get(path)
         .then(res => {
           this.msg = JSON.parse(res.data);
-          console.log("MSG:", this.msg);
         })
         .catch(err => {
           return err;

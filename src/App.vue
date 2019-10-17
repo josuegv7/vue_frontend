@@ -23,7 +23,7 @@
                 <em>User</em>
               </template>
               <b-dropdown-item href="#">Profile</b-dropdown-item>
-              <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+              <b-dropdown-item @click="signOut">Sign Out</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
@@ -32,3 +32,27 @@
     <router-view></router-view>
   </div>
 </template>
+
+<script>
+import axios from "axios";
+
+export default {
+   methods: {
+     signOut() {
+      const path = "http://127.0.0.1:5000/auth";
+      var bearer_Token = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
+      axios
+        .delete(path, config)
+        .then(res => {
+          this.msg = JSON.parse(res.data);
+          this.$cookies.remove("TOKEN");
+          this.$router.push('/home');
+        })
+        .catch(err => {
+          return err;
+        });
+    },
+   }
+}
+</script>

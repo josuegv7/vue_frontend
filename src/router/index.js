@@ -4,6 +4,7 @@ import Items from '@/components/Items.vue';
 import Projects from '@/components/Projects.vue';
 import Home from '@/components/Home.vue';
 import SignUp from '@/components/SignUp.vue';
+import SignIn from '@/components/SignIn.vue';
 
 
 Vue.use(Router);
@@ -31,7 +32,11 @@ export default new Router({
             path: '/signup',
             name: 'SignUp',
             component: SignUp,
+        },
+        {
+            path: '/signin',
+            name: 'SignIn',
+            component: SignIn,
         }
-
     ],
 });
