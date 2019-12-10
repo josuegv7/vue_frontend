@@ -2,7 +2,7 @@
   <div>
       <b-form-checkbox
         v-for="item in msg"
-        v-bind:key="item._id.$oid"
+        v-bind:key="item._id"
         v-bind:value="item.name"        
         >
         {{ item.name }}
@@ -21,11 +21,13 @@ export default {
   },
   methods: {
     getItems() {
-      const path = "http://127.0.0.1:5000/items";
+      const path = `http://localhost:3000/tools/myToolList`;
+      let authToken = this.$cookies.get("TOKEN");
+      let config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
-        .get(path)
+        .get(path, config)
         .then(res => {
-          this.msg = JSON.parse(res.data);
+          this.msg = res.data.toolList;
         })
         .catch(err => {
           return err;

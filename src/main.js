@@ -7,12 +7,9 @@ import VueCookies from 'vue-cookies';
 import axios from 'axios';
 
 
-
 Vue.use(axios);
 Vue.use(VueCookies);
-
 Vue.use(BootstrapVue);
-
 Vue.config.productionTip = false;
 
 

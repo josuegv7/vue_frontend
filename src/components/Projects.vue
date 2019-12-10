@@ -21,19 +21,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in msg" v-bind:key="item._id.$oid">
+            <tr v-for="item in msg" v-bind:key="item._id">
               <td class="stickyColumn">{{ item.name }}</td>
               <td>{{ item.items }}</td>
-              <td>{{ item.project_date }}</td>
-              <td>{{ item.project_status }}</td>
-              <!-- <td>{{ item._id.$oid }}</td> -->
+              <td>{{ item.project_startDate}}</td>
+              <td>{{ item.status }}</td>
               <td>
                 <div class="btn-group" role="group">
                   <button
                     type="button"
                     class="btn btn-warning btn-sm"
                     v-b-modal.item-update-modal
-                    @click="editItem(item)"
+                    @click="editProject(project)"
                     size="sm"
                   >Update</button>
                   <button
@@ -62,49 +61,50 @@
           ></b-form-input>
         </b-form-group>
 
-        <b-form-group id="form-items-group" label="items:" label-for="form-items-input">
+        <b-form-group id="form-items-group" label="Select Items:" label-for="form-items-input">
           <b-form-checkbox-group
             id="form-items-input"
             v-model="addProjectForm.items"
             required
-            placeholder="Enter items"
           >
             <DropDownItems></DropDownItems>
           </b-form-checkbox-group>
         </b-form-group>
 
+        <b-form-group id="form-items-group" label="Select Status:" label-for="form-status-input">
+          <b-form-select
+            id="form-status-input"
+            required
+            :options="options"
+            v-model="addProjectForm.project_status">
+          </b-form-select>
+        </b-form-group>
+
         <b-form-group
-          id="form-project_date-group"
+          id="form-project_startDate-group"
           label="Project Date:"
-          label-for="form-project_date-input"
+          label-for="form-project_startDate-input"
         >
           <b-form-input
-            id="form-project_date-input"
+            id="form-project_startDate-input"
             type="text"
-            v-model="addProjectForm.project_date"
+            v-model="addProjectForm.project_startDate"
             required
             placeholder="Enter Project Date"
           ></b-form-input>
         </b-form-group>
-        <b-form-group
-          id="form-project_status-group"
-          label="Project Status:"
-          label-for="form-project_status-input"
-        >
-          <b-form-input
-            id="form-project_status-input"
-            type="text"
-            v-model="addProjectForm.project_status"
-            required
-            placeholder="Enter Project Status"
-          ></b-form-input>
-        </b-form-group>
+
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
     </b-modal>
+
+
+
     <b-modal ref="editProjectModal" id="item-update-modal" title="Update" hide-footer>
       <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+        
+        
         <b-form-group id="form-name-edit-group" label="Name:" label-for="form-name-edit-input">
           <b-form-input
             id="form-name-edit-input"
@@ -114,41 +114,51 @@
             placeholder="Enter name"
           ></b-form-input>
         </b-form-group>
-        <b-form-group id="form-price-edit-group" label="Price:" label-for="form-price-edit-input">
+
+
+
+        <b-form-group id="form-items-edit-group" label="Items:" label-for="form-items-edit-input">
           <b-form-input
-            id="form-price-edit-input"
+            id="form-items-edit-input"
             type="text"
             v-model="editProjectForm.items"
             required
-            placeholder="Enter price"
           ></b-form-input>
         </b-form-group>
-        <b-form-group
-          id="form-price-quantity-group"
-          label="Qunatity:"
-          label-for="form-qunatity-edit-input"
-        >
+
+
+
+        <b-form-group id="form-status-edit-group" label="Status:" label-for="form-status-edit-input">
           <b-form-input
-            id="form-quantity-edit-input"
+            id="form-status-edit-input"
             type="text"
-            v-model="editProjectForm.project_date"
+            v-model="editProjectForm.status"
             required
-            placeholder="Enter quantity"
           ></b-form-input>
         </b-form-group>
-        <b-form-group
-          id="form-store-quantity-group"
-          label="Store:"
-          label-for="form-store-edit-input"
-        >
+
+
+
+
+        <b-form-group id="form-project_completed-edit-group" label="Project Completed:" label-for="form-project_completed-edit-input">
           <b-form-input
-            id="form-store-edit-input"
+            id="form-project_completed-edit-input"
             type="text"
-            v-model="editProjectForm.project_status"
+            v-model="editProjectForm.project_completed"
             required
-            placeholder="Enter store"
           ></b-form-input>
         </b-form-group>
+
+        <b-form-group id="form-project_completedDate-edit-group" label="Project Completed Date:" label-for="form-project_completedDate-edit-input">
+          <b-form-input
+            id="form-project_completedDate-edit-input"
+            type="text"
+            v-model="editProjectForm.project_completedDate"
+            required
+          ></b-form-input>
+        </b-form-group>
+
+
         <b-button-group>
           <b-button type="submit" variant="primary">Update</b-button>
           <b-button type="reset" variant="danger">Cancel</b-button>
@@ -160,9 +170,11 @@
 
 
 <script>
+import format from 'date-fns/format'
 import axios from "axios";
 import Alert from "./Alert.vue";
 import DropDown from "./DropdownItems.vue";
+
 
 export default {
   name: "Project",
@@ -172,18 +184,29 @@ export default {
       addProjectForm: {
         name: "",
         items: "",
-        project_date: "",
-        project_status: ""
+        status: "",
+        project_startDate: "",
       },
       editProjectForm: {
         id: "",
         name: "",
         items: "",
-        prject_date: "",
-        project_status: ""
+        status: "",
+        project_startDate: "",
+        project_completed: "",
+        project_completedDate: ""
       },
       message: "",
-      showMessage: false
+      showMessage: false,
+      options: [
+          { value: "Pending", text: 'Pending' },
+          { value: "In Progress", text: 'In Progress' },
+          { value: "Completed", text: 'Completed' },
+          { value: "Cancelled", text: 'Cancelled' },
+      ],
+      dateFormat: 'D MMM',
+      dateOne: '',
+      dateTwo: ''
     };
   },
   components: {
@@ -194,28 +217,39 @@ export default {
     initForm() {
       this.addProjectForm.name = "";
       this.addProjectForm.items = "";
-      this.addProjectForm.project_date = "";
-      this.addProjectForm.project_status = "";
+      this.addProjectForm.project_startDate = "";
+      this.addProjectForm.status = "";
+      this.addProjectForm.project_completed = "";
+      this.addProjectForm.project_completedDate = "";
+
       this.editProjectForm.name = "";
       this.editProjectForm.items = "";
-      this.editProjectForm.project_date = "";
-      this.editProjectForm.project_status = "";
+      this.editProjectForm.project_startDate= "";
+      this.editProjectForm.status= "";
+      this.editProjectForm.project_completed= "";
+      this.editProjectForm.project_completedDate= "";
     },
     getProjects() {
-      const path = "http://127.0.0.1:5000/projects";
+      const path = "http://localhost:3000/projects/myProjectList";
+      let authToken = this.$cookies.get("TOKEN");
+      let config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
-        .get(path)
+        .get(path, config)
         .then(res => {
-          this.msg = JSON.parse(res.data);
+          console.log("RES: ", res.data.projectList)
+          this.msg = res.data.projectList;
         })
         .catch(err => {
           return err;
         });
     },
     addProject(payload) {
-        const path = `http://127.0.0.1:5000/project`;
-      axios
-        .post(path, payload)
+        const path = `http://localhost:3000/projects/myProjectList/add`;
+        var authToken = this.$cookies.get("TOKEN");
+        var config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} } 
+        console.log("Payload: ", payload)
+        axios
+        .post(path, payload, config)
         .then(() => {
           this.getProjects();
           this.message = "Project added!";
@@ -228,10 +262,13 @@ export default {
         });
     },
     updateProject(payload) {
-      const path = `http://127.0.0.1:5000/project`;
+      let project_Id = payload._id
+      const path = `http://localhost:3000/projects/myProjectList/edit/${project_Id}`;
+      var authToken = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       // eslint-disable-next-line
       axios
-        .put(path, payload)
+        .put(path, payload, config)
         .then(() => {
           this.getProjects();
           this.message = "Project Updated";
@@ -244,10 +281,12 @@ export default {
         });
     },
     removeProject(payload) {
-      const path = `http://127.0.0.1:5000/project`;
-      // eslint-disable-next-line
+      let project_Id  = payload._id
+      const path = `http://localhost:3000/projects/myProjectList/delete/${project_Id}`;
+      let authToken = this.$cookies.get("TOKEN");
+      let config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} }
       axios
-        .delete(path, { params: payload })
+        .delete(path, config)
         .then(() => {
           this.getProjects();
           this.message = "Project was deleted";
@@ -265,7 +304,7 @@ export default {
       const payload = {
         name: this.addProjectForm.name,
         items: this.addProjectForm.items,
-        project_date: this.addProjectForm.project_date,
+        project_startDate: this.addProjectForm.project_startDate,
         project_status: this.addProjectForm.project_status
       };
       this.addProject(payload);
@@ -284,10 +323,12 @@ export default {
       this.$refs["editProjectModal"].hide();
       const payload = {
         name: this.editProjectForm.name,
-        price: this.editProjectForm.items,
-        quantity: this.editProjectForm.project_date,
-        store: this.editProjectForm.project_status,
-        _id: this.editProjectForm._id.$oid
+        items : this.editProjectForm. items,
+        project_startDate :this.editProjectForm.project_startDate,
+        project_status : this.editProjectForm.status,
+        project_completed : this.editProjectForm.project_completed,
+        project_completedDate : this.editProjectForm.project_completedDate,
+        _id: this.editProjectForm._id
       };
 
       this.updateItem(payload);
@@ -302,23 +343,22 @@ export default {
       const payload = {
         name: project.name,
         price: project.items,
-        quantity: project.project_date,
-        store: project.project_status,
-        _id: project._id.$oid
+        quantity: project.project_startDate,
+        status: project.project_status,
+        _id: project._id
       };
 
       this.removeProject(payload);
     },
-    getItems() {
-      const path = "http://127.0.0.1:5000/items";
-      axios
-        .get(path)
-        .then(res => {
-          this.msg = JSON.parse(res.data);
-        })
-        .catch(err => {
-          return err;
-        });
+    formatDates(dateOne, dateTwo) {
+      let formattedDates = ''
+      if (dateOne) {
+        formattedDates = format(dateOne, this.dateFormat)
+      }
+      if (dateTwo) {
+        formattedDates += ' - ' + format(dateTwo, this.dateFormat)
+      }
+      return formattedDates
     }
   },
   created() {

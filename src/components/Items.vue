@@ -2,12 +2,12 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h2>Items</h2>
+        <h2>Tools</h2>
         <hr />
         <br />
         <br />
         <alert :message="message" v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.item-modal>Add Item</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.item-modal>Add Tool</button>
         <br />
         <br />
         <table   class="table table-hover table-responsive">
@@ -17,17 +17,17 @@
               <th scope="col">Quantity</th>
               <th scope="col">Price</th>
               <th scope="col">Store</th>
-              <!-- <th scope="col">ID</th> -->
+              <th scope="col">ID</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in msg" v-bind:key="item._id.$oid">
+            <tr v-for="item in msg" v-bind:key="item._id">
               <td class="stickyColumn">{{ item.name }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.price }}</td>
               <td>{{ item.store }}</td>
-              <!-- <td>{{ item._id.$oid }}</td> -->
+              <!-- <td>{{ item._id }}</td> -->
               <td>
                 <div class="btn-group" role="group">
                   <button
@@ -37,12 +37,12 @@
                     @click="editItem(item)"
                     size="sm"
                   >Update</button>
-                  <button
+                  <b-button
                     type="button"
                     class="btn btn-danger btn-sm"
                     @click="onDeleteItem(item)"
                     size="sm"
-                  >Delete</button>
+                  >Delete</b-button>
                 </div>
               </td>
             </tr>
@@ -113,19 +113,19 @@
             placeholder="Enter price"
           ></b-form-input>
         </b-form-group>
-        <b-form-group
+        <!-- <b-form-group
           id="form-price-quantity-group"
           label="Qunatity:"
           label-for="form-qunatity-edit-input"
-        >
-          <b-form-input
+        > -->
+          <!-- <b-form-input
             id="form-quantity-edit-input"
             type="text"
             v-model="editForm.quantity"
             required
             placeholder="Enter quantity"
-          ></b-form-input>
-        </b-form-group>
+          ></b-form-input> -->
+        <!-- </b-form-group> -->
         <b-form-group
           id="form-store-quantity-group"
           label="Store:"
@@ -154,7 +154,6 @@
 <script>
 import axios from "axios";
 import Alert from "./Alert.vue";
-
 
 export default {
   name: "Ping",
@@ -193,22 +192,23 @@ export default {
       this.editForm.store = "";
     },
     getItems() {
-      const path = "http://127.0.0.1:5000/items";
-      var bearer_Token = this.$cookies.get("TOKEN");
-      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
+      const path = `http://localhost:3000/tools/myToolList`;
+      let authToken = this.$cookies.get("TOKEN");
+      let config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
         .get(path, config)
         .then(res => {
-          this.msg = JSON.parse(res.data);
+          console.log("RES: ", res.data.toolList)
+          this.msg = res.data.toolList;
         })
         .catch(err => {
           return err;
         });
     },
     addItem(payload) {
-      const path = `http://127.0.0.1:5000/item`;
-      var bearer_Token = this.$cookies.get("TOKEN");
-      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
+      const path = `http://localhost:3000/tools/myToolList/add`;
+      var authToken = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} } 
       axios
         .post(path, payload, config)
         .then(() => {
@@ -223,11 +223,12 @@ export default {
         });
     },
     updateItem(payload) {
-      const path = `http://127.0.0.1:5000/item`;
-      var bearer_Token = this.$cookies.get("TOKEN");
-      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
+      let item_Id = payload._id;
+      const path = `http://localhost:3000/tools/myToolList/edit/${item_Id}`;
+      var authToken = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
-        .put(path, payload, config)
+        .patch(path, payload, config)
         .then(() => {
           this.getItems();
           this.message = "Item Updated";
@@ -240,12 +241,12 @@ export default {
         });
     },
     removeItem(payload) {
-      const path = `http://127.0.0.1:5000/item`;
-      var delete_Object = {params: payload }
-      var bearer_Token = this.$cookies.get("TOKEN");
-      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
+      let item_Id  = payload._id
+      const path = `http://localhost:3000/tools/myToolList/delete/${item_Id}`;
+      let authToken = this.$cookies.get("TOKEN");
+      let config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} }
       axios
-      .delete(path, delete_Object, config)
+      .delete(path, config)
       .then(() => {
           this.getItems();
           this.message = "Item was deleted";
@@ -263,7 +264,7 @@ export default {
       const payload = {
         name: this.addItemForm.name,
         price: this.addItemForm.price,
-        quantity: this.addItemForm.quantity,
+        // quantity: this.addItemForm.quantity,
         store: this.addItemForm.store
       };
       this.addItem(payload);
@@ -285,9 +286,8 @@ export default {
         price: this.editForm.price,
         quantity: this.editForm.quantity,
         store: this.editForm.store,
-        _id: this.editForm._id.$oid
+        _id: this.editForm._id
       };
-
       this.updateItem(payload);
     },
     onResetUpdate(evt) {
@@ -302,15 +302,14 @@ export default {
         price: item.price,
         quantity: item.quantity,
         store: item.store,
-        _id: item._id.$oid
+        _id: item._id
       };
-  
+ 
       this.removeItem(payload);
     }
   },
   created() {
     this.getItems();
-
   }
 };
 </script>

@@ -39,15 +39,14 @@ import axios from "axios";
 export default {
    methods: {
      signOut() {
-      const path = "http://127.0.0.1:5000/auth";
-      var bearer_Token = this.$cookies.get("TOKEN");
-      var config = { headers: {'Content-Type': 'application/json', Authorization : `Bearer ${bearer_Token.replace(/"/g,"")}`} } 
+      const path = `http://localhost:3000/user/logout`;
+      var authToken = this.$cookies.get("TOKEN");
+      var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
         .delete(path, config)
         .then(res => {
-          this.msg = JSON.parse(res.data);
           this.$cookies.remove("TOKEN");
-          this.$router.push('/home');
+          this.$router.push('/');
         })
         .catch(err => {
           return err;

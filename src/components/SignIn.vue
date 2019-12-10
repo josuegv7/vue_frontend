@@ -5,12 +5,12 @@
       <alert :message="message" v-if="showMessage" variant="danger"></alert>
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
 
-        <b-form-group id="input-group-1" label="Username:" label-for="input-1">
+        <b-form-group id="input-group-1" label="Email:" label-for="input-1">
           <b-form-input
             id="input-1"
-            v-model="form.username"
+            v-model="form.email"
             required
-            placeholder="Enter a Username"
+            placeholder="Enter a Email"
           ></b-form-input>
         </b-form-group>
 
@@ -20,7 +20,7 @@
             id="input-2" 
             v-model="form.password" 
             required
-            placeholder="Enter a Username"
+            placeholder="Enter a Password"
             ></b-form-input>
         </b-form-group>
 
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       form: {
-        username: "",
+        email: "",
         password: ""
       },
       show: true,
@@ -54,15 +54,16 @@ export default {
   },
   methods: {
     SignInUser(payload) {
-      const path = `http://127.0.0.1:5000/auth`;
+      const path = `http://localhost:3000/user/login`;
       axios
         .post(path, payload)
         .then((response) => {
         // eslint-disable-next-line
         const status = response.status;
-        if(status === 201){
+        const header = response.headers.authtoken;
+        if(status === 200){
             // eslint-disable-next-line
-            this.$cookies.set('TOKEN', response.headers.jwt_auth_token);
+            this.$cookies.set('TOKEN', header);
             this.$router.push('/home');
         }
         else{
@@ -79,7 +80,6 @@ export default {
       evt.preventDefault();
       const payload = {
         email: this.form.email,
-        username: this.form.username,
         password: this.form.password
       };
       this.SignInUser(payload);

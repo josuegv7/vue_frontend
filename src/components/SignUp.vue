@@ -19,10 +19,10 @@
           ></b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Username:" label-for="input-2">
+        <b-form-group id="input-group-2" label="Name:" label-for="input-2">
           <b-form-input
             id="input-2"
-            v-model="form.username"
+            v-model="form.name"
             required
             placeholder="Enter a Username"
           ></b-form-input>
@@ -50,7 +50,7 @@ export default {
     return {
       form: {
         email: "",
-        username: "",
+        name: "",
         password: ""
       },
       show: true,
@@ -63,15 +63,18 @@ export default {
   },
   methods: {
     createUser(payload) {
-      const path = `http://127.0.0.1:5000/profile`;
+      const path = `http://localhost:3000/user/create`;
+      // const path = `https://calm-savannah-34971.herokuapp.com/user/create`
       axios
         .post(path, payload)
         .then((response) => {
         // eslint-disable-next-line
         const status = response.status;
-        if(status === 201){
+        const header = response.headers.authtoken;
+        // eslint-disable-next-line
+        if(status === 200){
             // eslint-disable-next-line
-            this.$cookies.set('TOKEN', response.headers.jwt_auth_token);
+            this.$cookies.set('TOKEN', header);
             this.$router.push('/home');
         }
         else{
@@ -88,7 +91,7 @@ export default {
       evt.preventDefault();
       const payload = {
         email: this.form.email,
-        username: this.form.username,
+        name: this.form.name,
         password: this.form.password
       };
       this.createUser(payload);
@@ -96,7 +99,7 @@ export default {
     onReset(evt) {
       evt.preventDefault();
       // Reset our form values
-      this.form.username = "";
+      this.form.name = "";
       this.form.email = "";
       this.form.password = "";
       // Trick to reset/clear native browser form validation state
