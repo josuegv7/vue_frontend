@@ -5,7 +5,8 @@ import Projects from '@/components/Projects.vue';
 import Home from '@/components/Home.vue';
 import SignUp from '@/components/SignUp.vue';
 import SignIn from '@/components/SignIn.vue';
-
+import FileUpload from '@/components/FileUpload.vue';
+import Files from '@/components/Files.vue';
 
 Vue.use(Router);
 
@@ -37,6 +38,17 @@ export default new Router({
             path: '/signin',
             name: 'SignIn',
             component: SignIn,
-        }
+        },
+        {
+            path: '/files',
+            name: 'Files',
+            component: Files,
+        },
+        {
+            path: '/fileupload',
+            name: 'FileUpload',
+            component: FileUpload,
+        },
+
     ],
 });

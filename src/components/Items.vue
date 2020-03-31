@@ -17,7 +17,6 @@
               <th scope="col">Quantity</th>
               <th scope="col">Price</th>
               <th scope="col">Store</th>
-              <th scope="col">ID</th>
               <th></th>
             </tr>
           </thead>
@@ -27,7 +26,6 @@
               <td>{{ item.quantity }}</td>
               <td>{{ item.price }}</td>
               <td>{{ item.store }}</td>
-              <!-- <td>{{ item._id }}</td> -->
               <td>
                 <div class="btn-group" role="group">
                   <button
@@ -113,19 +111,6 @@
             placeholder="Enter price"
           ></b-form-input>
         </b-form-group>
-        <!-- <b-form-group
-          id="form-price-quantity-group"
-          label="Qunatity:"
-          label-for="form-qunatity-edit-input"
-        > -->
-          <!-- <b-form-input
-            id="form-quantity-edit-input"
-            type="text"
-            v-model="editForm.quantity"
-            required
-            placeholder="Enter quantity"
-          ></b-form-input> -->
-        <!-- </b-form-group> -->
         <b-form-group
           id="form-store-quantity-group"
           label="Store:"
@@ -147,9 +132,6 @@
     </b-modal>
   </div>
 </template>
-
-
-
 
 <script>
 import axios from "axios";
@@ -304,7 +286,6 @@ export default {
         store: item.store,
         _id: item._id
       };
- 
       this.removeItem(payload);
     }
   },

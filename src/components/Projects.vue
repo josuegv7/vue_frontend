@@ -3,11 +3,11 @@
     <div class="row">
       <div class="col-sm-10">
         <h2>Projects</h2>
-        <hr />
+        <hr/>
         <br />
         <br />
         <alert :message="message" v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.item-modal>Add Item</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.item-modal>Add Project</button>
         <br />
         <br />
         <table class="table table-hover table-responsive">
@@ -17,28 +17,30 @@
               <th scope="col">Items</th>
               <th scope="col">Start Date</th>
               <th scope="col">Project Status</th>
+              <th scope="col">Completed Date</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in msg" v-bind:key="item._id">
-              <td class="stickyColumn">{{ item.name }}</td>
-              <td>{{ item.items }}</td>
-              <td>{{ item.project_startDate}}</td>
-              <td>{{ item.status }}</td>
+            <tr v-for="project in msg" v-bind:key="project._id">
+              <td class="stickyColumn">{{ project.name }}</td> 
+              <td>{{ project.items }}</td>
+              <td>{{ new Date(project.project_startDate).toDateString()}}</td>
+              <td>{{ project.status }}</td>
+              <td>{{ new Date(project.project_completedDate).toDateString()}}</td>
               <td>
                 <div class="btn-group" role="group">
                   <button
                     type="button"
                     class="btn btn-warning btn-sm"
-                    v-b-modal.item-update-modal
+                    v-b-modal.project-update-modal
                     @click="editProject(project)"
                     size="sm"
                   >Update</button>
                   <button
                     type="button"
                     class="btn btn-danger btn-sm"
-                    @click="onDeleteProject(item)"
+                    @click="onDeleteProject(project)"
                     size="sm"
                   >Delete</button>
                 </div>
@@ -48,7 +50,7 @@
         </table>
       </div>
     </div>
-
+<!-- ADD PROJECT MODEL START-->
     <b-modal ref="addProjectModal" id="item-modal" title="Add a new project" hide-footer>
       <b-form @submit="onSubmit" @reset="onReset" class="w-100">
         <b-form-group id="form-name-group" label="Name:" label-for="form-name-input">
@@ -67,7 +69,7 @@
             v-model="addProjectForm.items"
             required
           >
-            <DropDownItems></DropDownItems>
+          <DropDownItems></DropDownItems>
           </b-form-checkbox-group>
         </b-form-group>
 
@@ -82,29 +84,27 @@
 
         <b-form-group
           id="form-project_startDate-group"
-          label="Project Date:"
+          label="Project Start Date:"
           label-for="form-project_startDate-input"
         >
-          <b-form-input
-            id="form-project_startDate-input"
-            type="text"
-            v-model="addProjectForm.project_startDate"
-            required
-            placeholder="Enter Project Date"
-          ></b-form-input>
-        </b-form-group>
 
+        <vc-date-picker
+            id="form-project_startDate-input" 
+            v-model="addProjectForm.project_startDate"
+            mode="popover"
+            color="red"
+        />      
+      </b-form-group>
+      
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
     </b-modal>
+<!-- ADD PROJECT MODEL END -->
 
-
-
-    <b-modal ref="editProjectModal" id="item-update-modal" title="Update" hide-footer>
-      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
-        
-        
+<!--  EDIT PROJECT START -->
+    <b-modal ref="editProjectModal" id="project-update-modal" title="Update" hide-footer>
+      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">        
         <b-form-group id="form-name-edit-group" label="Name:" label-for="form-name-edit-input">
           <b-form-input
             id="form-name-edit-input"
@@ -114,50 +114,35 @@
             placeholder="Enter name"
           ></b-form-input>
         </b-form-group>
-
-
-
+        
         <b-form-group id="form-items-edit-group" label="Items:" label-for="form-items-edit-input">
-          <b-form-input
+          <b-form-checkbox-group
             id="form-items-edit-input"
-            type="text"
             v-model="editProjectForm.items"
             required
-          ></b-form-input>
+          >
+          <DropDownItems></DropDownItems>
+          </b-form-checkbox-group>
         </b-form-group>
-
-
 
         <b-form-group id="form-status-edit-group" label="Status:" label-for="form-status-edit-input">
-          <b-form-input
+          <b-form-select
             id="form-status-edit-input"
-            type="text"
+            required
+            :options="options"
             v-model="editProjectForm.status"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-
-
-
-        <b-form-group id="form-project_completed-edit-group" label="Project Completed:" label-for="form-project_completed-edit-input">
-          <b-form-input
-            id="form-project_completed-edit-input"
-            type="text"
-            v-model="editProjectForm.project_completed"
-            required
-          ></b-form-input>
+            ></b-form-select>
         </b-form-group>
 
         <b-form-group id="form-project_completedDate-edit-group" label="Project Completed Date:" label-for="form-project_completedDate-edit-input">
-          <b-form-input
-            id="form-project_completedDate-edit-input"
-            type="text"
+          <vc-date-picker
+            id="form-project_completedDate-edit-input" 
             v-model="editProjectForm.project_completedDate"
-            required
-          ></b-form-input>
+            mode="popover"
+            color="red"
+            is-dark
+          /> 
         </b-form-group>
-
 
         <b-button-group>
           <b-button type="submit" variant="primary">Update</b-button>
@@ -165,12 +150,12 @@
         </b-button-group>
       </b-form>
     </b-modal>
+<!--  EDIT PROJECT END -->
   </div>
 </template>
 
 
 <script>
-import format from 'date-fns/format'
 import axios from "axios";
 import Alert from "./Alert.vue";
 import DropDown from "./DropdownItems.vue";
@@ -185,7 +170,7 @@ export default {
         name: "",
         items: "",
         status: "",
-        project_startDate: "",
+        project_startDate: null
       },
       editProjectForm: {
         id: "",
@@ -203,10 +188,7 @@ export default {
           { value: "In Progress", text: 'In Progress' },
           { value: "Completed", text: 'Completed' },
           { value: "Cancelled", text: 'Cancelled' },
-      ],
-      dateFormat: 'D MMM',
-      dateOne: '',
-      dateTwo: ''
+      ]
     };
   },
   components: {
@@ -221,7 +203,6 @@ export default {
       this.addProjectForm.status = "";
       this.addProjectForm.project_completed = "";
       this.addProjectForm.project_completedDate = "";
-
       this.editProjectForm.name = "";
       this.editProjectForm.items = "";
       this.editProjectForm.project_startDate= "";
@@ -247,7 +228,7 @@ export default {
         const path = `http://localhost:3000/projects/myProjectList/add`;
         var authToken = this.$cookies.get("TOKEN");
         var config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} } 
-        console.log("Payload: ", payload)
+        console.log("Add Project Payload: ", payload)
         axios
         .post(path, payload, config)
         .then(() => {
@@ -266,9 +247,8 @@ export default {
       const path = `http://localhost:3000/projects/myProjectList/edit/${project_Id}`;
       var authToken = this.$cookies.get("TOKEN");
       var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
-      // eslint-disable-next-line
       axios
-        .put(path, payload, config)
+        .patch(path, payload, config)
         .then(() => {
           this.getProjects();
           this.message = "Project Updated";
@@ -324,14 +304,12 @@ export default {
       const payload = {
         name: this.editProjectForm.name,
         items : this.editProjectForm. items,
-        project_startDate :this.editProjectForm.project_startDate,
         project_status : this.editProjectForm.status,
-        project_completed : this.editProjectForm.project_completed,
         project_completedDate : this.editProjectForm.project_completedDate,
         _id: this.editProjectForm._id
       };
 
-      this.updateItem(payload);
+      this.updateProject(payload);
     },
     onResetUpdate(evt) {
       evt.preventDefault();
@@ -341,13 +319,9 @@ export default {
     },
     onDeleteProject(project) {
       const payload = {
-        name: project.name,
-        price: project.items,
-        quantity: project.project_startDate,
-        status: project.project_status,
         _id: project._id
       };
-
+      console.log(payload)
       this.removeProject(payload);
     },
     formatDates(dateOne, dateTwo) {
