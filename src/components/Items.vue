@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h2>Tools</h2>
+        <h2>Items</h2>
         <hr />
         <br />
         <br />
@@ -180,7 +180,7 @@ export default {
       axios
         .get(path, config)
         .then(res => {
-          console.log("RES: ", res.data.toolList)
+          // console.log("RES: ", res.data.toolList)
           this.msg = res.data.toolList;
         })
         .catch(err => {
@@ -202,6 +202,7 @@ export default {
           // eslint-disable-next-line
           console.log(err);
           this.getItems();
+          return err;
         });
     },
     updateItem(payload) {

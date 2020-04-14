@@ -8,9 +8,9 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            
             <b-nav-item href="/items">Items</b-nav-item>
             <b-nav-item href="/projects">Projects</b-nav-item>
+            <b-nav-item href="/files">Files</b-nav-item>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -44,7 +44,7 @@ export default {
       var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
         .delete(path, config)
-        .then(res => {
+        .then(() => {
           this.$cookies.remove("TOKEN");
           this.$router.push('/');
         })

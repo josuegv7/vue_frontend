@@ -30,7 +30,7 @@
           <tbody>
             <tr v-for="file in msg" v-bind:key="file._id">
               <td class="stickyColumn">{{ file.filename }}</td>
-              <td>{{ file.uploadDate }}</td>
+              <td>{{ new Date(file.uploadDate).toDateString() }}</td>
               <td>{{ file.contentType }}</td>
               <td>     
                   <button
@@ -48,7 +48,7 @@
                   <b-button
                     type="button"
                     class="btn btn-danger btn-sm"
-                    @click="onDeleteItem(item)"
+                    @click="onDeleteFile(file)"
                     size="sm"
                     >Delete</b-button
                   >
@@ -65,39 +65,51 @@
             <b-form-file
             v-model="uploadFileForm.name"
             placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
+            drop-placeholder="Add file here..."
             ></b-form-file>
             <b-button type="submit" variant="primary">Submit</b-button>
         </b-form>
     </b-modal>
     <!-- DISPLAY MODAL: -->
-    <b-modal ref="displayFileModal" id="display-file-modal" title="View File" hide-footer>
+    <b-modal v-if="fileType !== 'application/pdf'" ref="displayFileModal" id="display-file-modal" title="View Image" hide-footer>
        <h4>File:</h4>
        <b-img :src="img" fluid alt="Image"></b-img>
-
+    </b-modal>
+    <b-modal v-else ref="displayFileModal" id="display-file-modal" title="View File" hide-footer>
+       <h4>PDF:</h4>
+        <pdf             
+            @num-pages="pageCount = $event"
+			@page-loaded="currentPage = $event"
+            :src="img"
+        ></pdf>
     </b-modal>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import pdf from "vue-pdf";
 import Alert from "./Alert.vue";
 
 export default {
   name: "Ping",
   data() {
     return {
+     fileType: "",
       msg: "",
       img: "",
       uploadFileForm: {
           name: ""
       },
-       message: "",
-      showMessage: false
+      message: "",
+      showMessage: false,
+      currentPage: 0,
+      pageCount: 0,
     };
   },
   components: {
-    alert: Alert
+    alert: Alert,
+    pdf
   },
   methods: {
     initForm() {
@@ -116,10 +128,12 @@ export default {
     },
     uploadFile(payload){
         const path = `http://localhost:3000/files/upload`;
-        const config = {headers: {'content-type': 'multipart/form-data'}}
+        var authToken = this.$cookies.get("TOKEN");
+        var config = { headers: {'Content-Type': 'multipart/form-data', authToken : `${authToken.replace(/"/g,"")}`} } 
         axios
             .post(path, payload, config)
             .then(()=>{
+                 // eslint-disable-next-line
                 this. getFiles();
                 this.message = "File added!";
                 this.showMessage = true;
@@ -131,46 +145,70 @@ export default {
             return err;
             });
         },
-        openFile(payload){
-            let fileName = payload.filename;
-            const path = `http://localhost:3000/files/open/${fileName}`;
-            axios
-                .get(path, payload)
-                .then((res) => {
-                console.log("RES:", res)
-                this.img = res.config.url;
-                this.getFiles();
-                this.message = "File Opened";
-                this.showMessage = true;
-                })
-                .catch((err) => {
-                // eslint-disable-next-line
-                console.error(err);
-                this.getFiles();
-                });
+    openFile(payload){
+        let fileName = payload.filename;
+        let fileType = payload.contentType;
+        const path = `http://localhost:3000/files/open/${fileName}`;
+        axios
+            .get(path, payload)
+            .then((res) => {
+            // console.log("RES:", res)
+            this.img = res.config.url;
+            this.fileType = fileType;
+            this.fileName =fileName;
+            this.getFiles();
+            this.message = "File Opened";
+            this.showMessage = true;
+            // if(this.fileType == 'application/pdf'){
+            //     // let pdfSrc = pdf.createLoadingTask(this.img)
+            //     let pdfSrc =this.img
+
+            //     this.pdfSrc.then(pdf=>{
+            //     this.numPages =pdf.numPages
+            //     })
+            // }
+            })
+            .catch((err) => {
+            // eslint-disable-next-line
+            console.error(err);
+            this.getFiles();
+            });
         },
-        onSubmit(evt) {
-            evt.preventDefault();
-            let file = this.uploadFileForm.name;
-            let formData = new FormData();
-            formData.append('file', file);
-            this.uploadFile(formData);
-        },
-        onReset(evt) {
+    deleteFile(payload){
+        let fileID = payload._id
+        const path = `http://localhost:3000/files/delete/${fileID}`;
+              axios
+      .delete(path)
+      .then(() => {
+          this.getFiles();
+          this.message = "File was deleted";
+          this.showMessage = true;
+        })
+        .catch(err => {
+          // eslint-disable-next-line
+          console.error(err);
+          this.getFiles();
+        });
+    },
+    onSubmit(evt) {
+        evt.preventDefault();
+        this.$refs["addFilemModal"].hide();
+        let file = this.uploadFileForm.name;
+        let formData = new FormData();
+        formData.append('file', file);
+        this.uploadFile(formData);
+    },
+    onReset(evt) {
         evt.preventDefault();
         this.$refs.addFilemModal.hide();
         this.initForm();
-        },
-    // onDeleteItem(item) {
-    //   const payload = {
-    //     name: item.name,
-    //     price: item.price,
-    //     quantity: item.quantity,
-    //     store: item.store,
-    //     _id: item._id
-    //   };
-    //   this.removeItem(payload);
-    // }
+    },
+    onDeleteFile(file) {
+      const payload = {
+        _id: file._id
+      };
+      this.deleteFile(payload);
+    }
   },
   created() {
     this.getFiles();

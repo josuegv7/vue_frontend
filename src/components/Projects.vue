@@ -217,7 +217,7 @@ export default {
       axios
         .get(path, config)
         .then(res => {
-          console.log("RES: ", res.data.projectList)
+          // console.log("RES: ", res.data.projectList)
           this.msg = res.data.projectList;
         })
         .catch(err => {
@@ -228,7 +228,7 @@ export default {
         const path = `http://localhost:3000/projects/myProjectList/add`;
         var authToken = this.$cookies.get("TOKEN");
         var config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} } 
-        console.log("Add Project Payload: ", payload)
+        // console.log("Add Project Payload: ", payload)
         axios
         .post(path, payload, config)
         .then(() => {
@@ -321,19 +321,9 @@ export default {
       const payload = {
         _id: project._id
       };
-      console.log(payload)
+      // console.log(payload)
       this.removeProject(payload);
     },
-    formatDates(dateOne, dateTwo) {
-      let formattedDates = ''
-      if (dateOne) {
-        formattedDates = format(dateOne, this.dateFormat)
-      }
-      if (dateTwo) {
-        formattedDates += ' - ' + format(dateTwo, this.dateFormat)
-      }
-      return formattedDates
-    }
   },
   created() {
     this.getProjects();
