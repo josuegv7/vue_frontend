@@ -32,7 +32,7 @@ export default{
         },
         uploadFile(payload){
             console.log("uploadFile Payload: ", payload)
-            const path = `http://localhost:3000/files/upload`;
+            const path = `https://calm-savannah-34971.herokuapp.com/files/upload`;
             const config = {headers: {'content-type': 'multipart/form-data'}}
             axios
                 .post(path, payload, config)

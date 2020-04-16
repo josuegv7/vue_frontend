@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     getItems() {
-      const path = `http://localhost:3000/tools/myToolList`;
+      const path = `https://calm-savannah-34971.herokuapp.com/tools/myToolList`;
       let authToken = this.$cookies.get("TOKEN");
       let config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios

@@ -174,7 +174,7 @@ export default {
       this.editForm.store = "";
     },
     getItems() {
-      const path = `http://localhost:3000/tools/myToolList`;
+      const path = `https://calm-savannah-34971.herokuapp.com/tools/myToolList`;
       let authToken = this.$cookies.get("TOKEN");
       let config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
@@ -188,7 +188,7 @@ export default {
         });
     },
     addItem(payload) {
-      const path = `http://localhost:3000/tools/myToolList/add`;
+      const path = `https://calm-savannah-34971.herokuapp.com/tools/myToolList/add`;
       var authToken = this.$cookies.get("TOKEN");
       var config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} } 
       axios
@@ -207,7 +207,7 @@ export default {
     },
     updateItem(payload) {
       let item_Id = payload._id;
-      const path = `http://localhost:3000/tools/myToolList/edit/${item_Id}`;
+      const path = `https://calm-savannah-34971.herokuapp.com/tools/myToolList/edit/${item_Id}`;
       var authToken = this.$cookies.get("TOKEN");
       var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
@@ -225,7 +225,7 @@ export default {
     },
     removeItem(payload) {
       let item_Id  = payload._id
-      const path = `http://localhost:3000/tools/myToolList/delete/${item_Id}`;
+      const path = `https://calm-savannah-34971.herokuapp.com/tools/myToolList/delete/${item_Id}`;
       let authToken = this.$cookies.get("TOKEN");
       let config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} }
       axios

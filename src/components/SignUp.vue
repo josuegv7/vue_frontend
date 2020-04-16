@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     createUser(payload) {
-      const path = `http://localhost:3000/user/create`;
+      const path = `https://calm-savannah-34971.herokuapp.com/user/create`;
       // const path = `https://calm-savannah-34971.herokuapp.com/user/create`
       axios
         .post(path, payload)

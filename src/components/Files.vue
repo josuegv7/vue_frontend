@@ -116,7 +116,7 @@ export default {
       this.uploadFileForm.name = "";
     },
     getFiles() {
-      const path = `http://localhost:3000/files/getfile`;
+      const path = `https://calm-savannah-34971.herokuapp.com/files/getfile`;
       axios
         .get(path)
         .then(res => {
@@ -127,7 +127,7 @@ export default {
         });
     },
     uploadFile(payload){
-        const path = `http://localhost:3000/files/upload`;
+        const path = `https://calm-savannah-34971.herokuapp.com/files/upload`;
         var authToken = this.$cookies.get("TOKEN");
         var config = { headers: {'Content-Type': 'multipart/form-data', authToken : `${authToken.replace(/"/g,"")}`} } 
         axios
@@ -148,7 +148,7 @@ export default {
     openFile(payload){
         let fileName = payload.filename;
         let fileType = payload.contentType;
-        const path = `http://localhost:3000/files/open/${fileName}`;
+        const path = `https://calm-savannah-34971.herokuapp.com/files/open/${fileName}`;
         axios
             .get(path, payload)
             .then((res) => {
@@ -176,7 +176,7 @@ export default {
         },
     deleteFile(payload){
         let fileID = payload._id
-        const path = `http://localhost:3000/files/delete/${fileID}`;
+        const path = `https://calm-savannah-34971.herokuapp.com/files/delete/${fileID}`;
               axios
       .delete(path)
       .then(() => {

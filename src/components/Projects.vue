@@ -211,7 +211,7 @@ export default {
       this.editProjectForm.project_completedDate= "";
     },
     getProjects() {
-      const path = "http://localhost:3000/projects/myProjectList";
+      const path = "https://calm-savannah-34971.herokuapp.com/projects/myProjectList";
       let authToken = this.$cookies.get("TOKEN");
       let config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
@@ -225,7 +225,7 @@ export default {
         });
     },
     addProject(payload) {
-        const path = `http://localhost:3000/projects/myProjectList/add`;
+        const path = `https://calm-savannah-34971.herokuapp.com/projects/myProjectList/add`;
         var authToken = this.$cookies.get("TOKEN");
         var config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} } 
         // console.log("Add Project Payload: ", payload)
@@ -244,7 +244,7 @@ export default {
     },
     updateProject(payload) {
       let project_Id = payload._id
-      const path = `http://localhost:3000/projects/myProjectList/edit/${project_Id}`;
+      const path = `https://calm-savannah-34971.herokuapp.com/projects/myProjectList/edit/${project_Id}`;
       var authToken = this.$cookies.get("TOKEN");
       var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
@@ -262,7 +262,7 @@ export default {
     },
     removeProject(payload) {
       let project_Id  = payload._id
-      const path = `http://localhost:3000/projects/myProjectList/delete/${project_Id}`;
+      const path = `https://calm-savannah-34971.herokuapp.com/projects/myProjectList/delete/${project_Id}`;
       let authToken = this.$cookies.get("TOKEN");
       let config = { headers: {'Content-Type': 'application/json', authToken : ` ${authToken.replace(/"/g,"")}`} }
       axios

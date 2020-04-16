@@ -39,7 +39,7 @@ import axios from "axios";
 export default {
    methods: {
      signOut() {
-      const path = `http://localhost:3000/user/logout`;
+      const path = `https://calm-savannah-34971.herokuapp.com/user/logout`;
       var authToken = this.$cookies.get("TOKEN");
       var config = { headers: {'Content-Type': 'application/json', authToken : `${authToken.replace(/"/g,"")}`} } 
       axios
